@@ -1,0 +1,22 @@
+{
+  "name": "news-digest",
+  "version": "1.0.0",
+  "description": "毎朝8時に原油・ナフサ・プラスチック・小売・包装資材関連ニュースを収集してメール配信する自動化ツール",
+  "main": "src/index.js",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "fetch": "node src/fetch-news.js",
+    "generate": "node src/generate-digest.js",
+    "capture": "node scripts/capture.js",
+    "send": "node src/send-email.js",
+    "run-all": "node src/index.js"
+  },
+  "dependencies": {
+    "@sendgrid/mail": "^8.1.3",
+    "js-yaml": "^4.1.0",
+    "playwright": "^1.51.1",
+    "rss-parser": "^3.13.0"
+  }
+}

@@ -1,0 +1,107 @@
+name: ニュースダイジェスト 毎朝配信
+
+on:
+  schedule:
+    # JST 08:00 = UTC 23:00（前日）
+    - cron: "0 23 * * *"
+  workflow_dispatch:
+    inputs:
+      target_date:
+        description: "対象日（YYYY-MM-DD、省略時は当日）"
+        required: false
+        default: ""
+      skip_send:
+        description: "メール送信をスキップ（テスト用）"
+        required: false
+        default: "false"
+
+concurrency:
+  group: news-digest-daily
+  cancel-in-progress: false
+
+jobs:
+  news-digest:
+    name: ニュース収集・配信
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: リポジトリをチェックアウト
+        uses: actions/checkout@v4
+
+      - name: Node.js セットアップ
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: 日本語フォントのインストール
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y fonts-noto-cjk
+
+      - name: 依存パッケージのインストール
+        run: npm ci
+
+      - name: Playwright Chromium のインストール
+        run: npx playwright install chromium --with-deps
+
+      - name: ニュース取得
+        run: |
+          DATE_ARG=""
+          if [ -n "${{ github.event.inputs.target_date }}" ]; then
+            DATE_ARG="--date ${{ github.event.inputs.target_date }}"
+          fi
+          node src/fetch-news.js $DATE_ARG
+
+      - name: HTML 図解生成
+        run: node src/generate-digest.js
+
+      - name: PNG スクリーンショット生成
+        run: |
+          if [ -f output/capture-list.txt ]; then
+            node scripts/capture.js --batch output/capture-list.txt
+          else
+            echo "[WARN] capture-list.txt が見つかりません。PNG生成をスキップします。"
+          fi
+
+      - name: 生成ファイル一覧
+        run: ls -lh output/
+
+      - name: メール送信
+        if: ${{ github.event.inputs.skip_send != 'true' }}
+        env:
+          SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
+          GMAIL_USER: ${{ secrets.GMAIL_USER }}
+          GMAIL_APP_PASS: ${{ secrets.GMAIL_APP_PASS }}
+          MAIL_TO: ${{ secrets.MAIL_TO }}
+          MAIL_FROM: ${{ secrets.MAIL_FROM }}
+        run: node src/send-email.js
+
+      - name: 成果物を保存（デバッグ用）
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: digest-output-${{ github.run_id }}
+          path: output/
+          retention-days: 7
+
+      - name: エラー通知（失敗時）
+        if: failure()
+        env:
+          SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
+          MAIL_TO: ${{ secrets.MAIL_TO }}
+          MAIL_FROM: ${{ secrets.MAIL_FROM }}
+          MAIL_SUBJECT: "【エラー】ニュースダイジェスト 配信失敗"
+        run: |
+          node -e "
+          const sgMail = require('@sendgrid/mail');
+          sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+          if (!process.env.SENDGRID_API_KEY) { console.log('SendGrid未設定のためスキップ'); process.exit(0); }
+          sgMail.send({
+            to: process.env.MAIL_TO,
+            from: process.env.MAIL_FROM,
+            subject: process.env.MAIL_SUBJECT,
+            text: 'GitHub Actions のニュースダイジェストジョブが失敗しました。\nhttps://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}'
+          }).then(() => console.log('エラー通知送信完了')).catch(e => console.error('通知失敗:', e.message));
+          "

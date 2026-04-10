@@ -1,0 +1,96 @@
+# ニュースダイジェスト設定ファイル
+
+# 収集時間ウィンドウ（時間）
+time_window_hours: 24  # 前日8時〜当日8時
+
+# ニュースソース（RSS フィード）
+sources:
+  # Google News 日本語（検索クエリ別）
+  - name: "Google News - 原油・ナフサ"
+    url: "https://news.google.com/rss/search?q=%E5%8E%9F%E6%B2%B9+%E3%83%8A%E3%83%95%E3%82%B5&hl=ja&gl=JP&ceid=JP:ja"
+    lang: ja
+
+  - name: "Google News - プラスチック"
+    url: "https://news.google.com/rss/search?q=%E3%83%97%E3%83%A9%E3%82%B9%E3%83%81%E3%83%83%E3%82%AF+%E6%96%B0%E5%95%86%E5%93%81&hl=ja&gl=JP&ceid=JP:ja"
+    lang: ja
+
+  - name: "Google News - 小売業"
+    url: "https://news.google.com/rss/search?q=%E5%B0%8F%E5%A3%B2+%E6%A5%AD%E7%95%8C&hl=ja&gl=JP&ceid=JP:ja"
+    lang: ja
+
+  - name: "Google News - 包装資材"
+    url: "https://news.google.com/rss/search?q=%E5%8C%85%E8%A3%85%E8%B3%87%E6%9D%90+%E5%8C%85%E6%9D%90&hl=ja&gl=JP&ceid=JP:ja"
+    lang: ja
+
+  # Yahoo Japan ニュース（トピック別）
+  - name: "Yahoo Japan - 経済"
+    url: "https://news.yahoo.co.jp/rss/topics/business.xml"
+    lang: ja
+
+  # ロイター 日本語
+  - name: "ロイター - ビジネス"
+    url: "https://feeds.reuters.com/reuters/JPBusinessNews"
+    lang: ja
+
+  # ロイター 英語（原油・エネルギー）
+  - name: "Reuters - Energy"
+    url: "https://feeds.reuters.com/reuters/UKenergyNews"
+    lang: en
+
+  # 日経（見出しのみ）
+  - name: "日本経済新聞"
+    url: "https://www.nikkei.com/rss/news.rdf"
+    lang: ja
+
+  # ブルームバーグ 日本版
+  - name: "Bloomberg Japan - ビジネス"
+    url: "https://feeds.bloomberg.co.jp/bloomberg/businessnews.rss"
+    lang: ja
+
+  - name: "Bloomberg Japan - テクノロジー"
+    url: "https://feeds.bloomberg.co.jp/bloomberg/technologynews.rss"
+    lang: ja
+
+  # Google News - AI関連
+  - name: "Google News - AI・人工知能"
+    url: "https://news.google.com/rss/search?q=%E4%BA%BA%E5%B7%A5%E7%9F%A5%E8%83%BD+AI&hl=ja&gl=JP&ceid=JP:ja"
+    lang: ja
+
+# カテゴリ定義（キーワードでカテゴリ分け）
+categories:
+  crude_oil:
+    label: "原油・ナフサ"
+    color: "#e74c3c"
+    keywords_ja: ["原油", "ナフサ", "石油", "原油価格", "WTI", "ブレント", "石油化学", "エネルギー価格", "OPEC"]
+    keywords_en: ["crude oil", "naphtha", "petroleum", "WTI", "Brent", "OPEC", "oil price", "energy price"]
+
+  plastics:
+    label: "プラスチック・樹脂"
+    color: "#2ecc71"
+    keywords_ja: ["プラスチック", "樹脂", "ポリエチレン", "ポリプロピレン", "PET", "塩ビ", "合成樹脂", "高分子"]
+    keywords_en: ["plastic", "resin", "polyethylene", "polypropylene", "PET", "PVC", "polymer"]
+
+  retail:
+    label: "小売業"
+    color: "#3498db"
+    keywords_ja: ["小売", "スーパー", "コンビニ", "量販店", "ドラッグストア", "百貨店", "EC", "通販", "流通"]
+    keywords_en: ["retail", "supermarket", "convenience store", "drugstore", "e-commerce", "distribution"]
+
+  packaging:
+    label: "包装資材"
+    color: "#9b59b6"
+    keywords_ja: ["包装", "包材", "梱包", "容器", "袋", "フィルム", "ラベル", "段ボール", "缶", "瓶", "パッケージ"]
+    keywords_en: ["packaging", "container", "film", "label", "carton", "can", "bottle", "package"]
+
+  ai:
+    label: "AI・テクノロジー"
+    color: "#f39c12"
+    keywords_ja: ["人工知能", "AI", "機械学習", "生成AI", "ChatGPT", "LLM", "深層学習", "自動化", "DX", "デジタル変革", "ロボット"]
+    keywords_en: ["artificial intelligence", "AI", "machine learning", "generative AI", "ChatGPT", "LLM", "deep learning", "automation", "digital transformation", "robot"]
+
+# フィルタ設定
+filter:
+  # 記事タイトルまたは概要にキーワードが含まれていれば対象とする
+  match_fields: ["title", "summary"]
+  # 最大取得記事数（カテゴリ別）
+  max_articles_per_category: 10
