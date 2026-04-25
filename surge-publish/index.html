@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ニュースダイジェスト 完成レポート</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Hiragino Sans', 'Yu Gothic', sans-serif;
+      background: #f8fafc;
+    }
+  </style>
+</head>
+<body class="min-h-screen py-10 px-4">
+
+  <div class="max-w-[500px] mx-auto space-y-6">
+
+    <!-- タイトル -->
+    <div class="text-center space-y-2">
+      <div class="inline-flex items-center gap-2 px-4 py-1.5 bg-slate-900 rounded-full">
+        <svg class="w-4 h-4 text-emerald-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+        <span class="text-white text-xs font-semibold tracking-wider">稼働中</span>
+      </div>
+      <h1 class="text-2xl font-bold text-slate-900">ニュースダイジェスト</h1>
+      <p class="text-sm text-slate-500">業界ニュース自動収集・メール配信ツール 完成レポート</p>
+    </div>
+
+    <!-- ===== SECTION 1: 何ができたか ===== -->
+    <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
+      <div class="bg-slate-900 px-5 py-3 flex items-center gap-2">
+        <svg class="w-4 h-4 text-amber-400" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>
+        <span class="text-white text-sm font-semibold">できあがったもの</span>
+      </div>
+      <div class="p-5 space-y-3">
+        <div class="flex items-center gap-3 p-3.5 bg-amber-50 rounded-xl border border-amber-100">
+          <div class="w-10 h-10 rounded-xl bg-amber-500 flex items-center justify-center flex-shrink-0">
+            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          </div>
+          <div>
+            <div class="font-bold text-slate-900">毎朝 08:00 に自動配信</div>
+            <div class="text-xs text-slate-500 mt-0.5">サーバー不要・費用¥0・設定後は放置でOK</div>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-2.5">
+          <div class="p-3 bg-slate-50 rounded-xl border border-slate-100 text-center">
+            <div class="text-2xl font-bold text-slate-900">5</div>
+            <div class="text-xs text-slate-500 mt-0.5">収集メディア</div>
+          </div>
+          <div class="p-3 bg-slate-50 rounded-xl border border-slate-100 text-center">
+            <div class="text-2xl font-bold text-slate-900">11</div>
+            <div class="text-xs text-slate-500 mt-0.5">RSSフィード</div>
+          </div>
+          <div class="p-3 bg-slate-50 rounded-xl border border-slate-100 text-center">
+            <div class="text-2xl font-bold text-slate-900">5</div>
+            <div class="text-xs text-slate-500 mt-0.5">カテゴリ</div>
+          </div>
+          <div class="p-3 bg-slate-50 rounded-xl border border-slate-100 text-center">
+            <div class="text-2xl font-bold text-slate-900">6</div>
+            <div class="text-xs text-slate-500 mt-0.5">PNG図解/日</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== SECTION 2: 収集ソース ===== -->
+    <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
+      <div class="bg-blue-600 px-5 py-3 flex items-center gap-2">
+        <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064"/></svg>
+        <span class="text-white text-sm font-semibold">収集ソース（5メディア）</span>
+      </div>
+      <div class="p-5">
+        <div class="space-y-2">
+          <div class="flex items-center gap-3 p-3 bg-blue-50 rounded-xl border border-blue-100">
+            <div class="w-8 h-8 rounded-lg bg-blue-500 flex items-center justify-center flex-shrink-0">
+              <svg class="w-4 h-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20"/></svg>
+            </div>
+            <div class="flex-1">
+              <div class="text-sm font-semibold text-slate-800">Google News</div>
+              <div class="text-xs text-slate-500">カテゴリ別検索RSS · 4フィード</div>
+            </div>
+            <div class="px-2 py-0.5 bg-blue-100 rounded-full text-xs text-blue-600 font-medium">無料</div>
+          </div>
+          <div class="flex items-center gap-3 p-3 bg-red-50 rounded-xl border border-red-100">
+            <div class="w-8 h-8 rounded-lg bg-red-500 flex items-center justify-center flex-shrink-0">
+              <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9"/></svg>
+            </div>
+            <div class="flex-1">
+              <div class="text-sm font-semibold text-slate-800">Yahoo Japan ニュース</div>
+              <div class="text-xs text-slate-500">ビジネス・経済トピック · 1フィード</div>
+            </div>
+            <div class="px-2 py-0.5 bg-red-100 rounded-full text-xs text-red-600 font-medium">無料</div>
+          </div>
+          <div class="flex items-center gap-3 p-3 bg-orange-50 rounded-xl border border-orange-100">
+            <div class="w-8 h-8 rounded-lg bg-orange-500 flex items-center justify-center flex-shrink-0">
+              <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+            </div>
+            <div class="flex-1">
+              <div class="text-sm font-semibold text-slate-800">ロイター通信</div>
+              <div class="text-xs text-slate-500">日本語ビジネス・英語エネルギー · 2フィード</div>
+            </div>
+            <div class="px-2 py-0.5 bg-orange-100 rounded-full text-xs text-orange-600 font-medium">無料</div>
+          </div>
+          <div class="flex items-center gap-3 p-3 bg-slate-50 rounded-xl border border-slate-200">
+            <div class="w-8 h-8 rounded-lg bg-slate-700 flex items-center justify-center flex-shrink-0">
+              <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+            </div>
+            <div class="flex-1">
+              <div class="text-sm font-semibold text-slate-800">日本経済新聞</div>
+              <div class="text-xs text-slate-500">見出し + リンク · 1フィード</div>
+            </div>
+            <div class="px-2 py-0.5 bg-slate-200 rounded-full text-xs text-slate-600 font-medium">無料RSS</div>
+          </div>
+          <div class="flex items-center gap-3 p-3 bg-purple-50 rounded-xl border border-purple-100">
+            <div class="w-8 h-8 rounded-lg bg-purple-600 flex items-center justify-center flex-shrink-0">
+              <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+            </div>
+            <div class="flex-1">
+              <div class="text-sm font-semibold text-slate-800">Bloomberg 日本版</div>
+              <div class="text-xs text-slate-500">ビジネス・テクノロジー · 2フィード</div>
+            </div>
+            <div class="px-2 py-0.5 bg-purple-100 rounded-full text-xs text-purple-600 font-medium">無料RSS</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== SECTION 3: 5カテゴリ ===== -->
+    <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
+      <div class="bg-emerald-600 px-5 py-3 flex items-center gap-2">
+        <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/></svg>
+        <span class="text-white text-sm font-semibold">自動分類カテゴリ（5分野）</span>
+      </div>
+      <div class="p-5 space-y-2">
+        <div class="flex items-start gap-3 p-3 bg-red-50 rounded-xl border border-red-100">
+          <div class="w-2.5 h-2.5 rounded-full bg-red-500 mt-1 flex-shrink-0"></div>
+          <div>
+            <div class="text-sm font-semibold text-red-700">原油・ナフサ</div>
+            <div class="text-xs text-slate-500 mt-0.5">原油 / ナフサ / WTI / ブレント / OPEC / 石油化学 / エネルギー価格</div>
+          </div>
+        </div>
+        <div class="flex items-start gap-3 p-3 bg-green-50 rounded-xl border border-green-100">
+          <div class="w-2.5 h-2.5 rounded-full bg-green-500 mt-1 flex-shrink-0"></div>
+          <div>
+            <div class="text-sm font-semibold text-green-700">プラスチック・樹脂</div>
+            <div class="text-xs text-slate-500 mt-0.5">プラスチック / 樹脂 / ポリエチレン / PET / 合成樹脂 / 高分子</div>
+          </div>
+        </div>
+        <div class="flex items-start gap-3 p-3 bg-blue-50 rounded-xl border border-blue-100">
+          <div class="w-2.5 h-2.5 rounded-full bg-blue-500 mt-1 flex-shrink-0"></div>
+          <div>
+            <div class="text-sm font-semibold text-blue-700">小売業</div>
+            <div class="text-xs text-slate-500 mt-0.5">小売 / スーパー / コンビニ / 量販店 / EC / 通販 / 流通</div>
+          </div>
+        </div>
+        <div class="flex items-start gap-3 p-3 bg-purple-50 rounded-xl border border-purple-100">
+          <div class="w-2.5 h-2.5 rounded-full bg-purple-500 mt-1 flex-shrink-0"></div>
+          <div>
+            <div class="text-sm font-semibold text-purple-700">包装資材</div>
+            <div class="text-xs text-slate-500 mt-0.5">包装 / 包材 / 梱包 / フィルム / 段ボール / 容器 / パッケージ</div>
+          </div>
+        </div>
+        <div class="flex items-start gap-3 p-3 bg-orange-50 rounded-xl border border-orange-100">
+          <div class="w-2.5 h-2.5 rounded-full bg-orange-500 mt-1 flex-shrink-0"></div>
+          <div>
+            <div class="text-sm font-semibold text-orange-700">AI・テクノロジー</div>
+            <div class="text-xs text-slate-500 mt-0.5">生成AI / ChatGPT / LLM / DX / 自動化 / デジタル変革</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== SECTION 4: システムフロー ===== -->
+    <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
+      <div class="bg-violet-600 px-5 py-3 flex items-center gap-2">
+        <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+        <span class="text-white text-sm font-semibold">自動処理フロー</span>
+      </div>
+      <div class="p-5">
+        <div class="space-y-1">
+          <div class="flex gap-3">
+            <div class="flex flex-col items-center">
+              <div class="w-8 h-8 rounded-full bg-amber-500 flex items-center justify-center text-white text-xs font-bold flex-shrink-0">1</div>
+              <div class="w-0.5 h-6 bg-slate-200 mt-1"></div>
+            </div>
+            <div class="pb-4">
+              <div class="text-sm font-semibold text-slate-900 mt-1.5">毎朝08:00 自動起動</div>
+              <div class="text-xs text-slate-500 mt-0.5">GitHub Actions cron — サーバー不要</div>
+            </div>
+          </div>
+          <div class="flex gap-3">
+            <div class="flex flex-col items-center">
+              <div class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white text-xs font-bold flex-shrink-0">2</div>
+              <div class="w-0.5 h-6 bg-slate-200 mt-1"></div>
+            </div>
+            <div class="pb-4">
+              <div class="text-sm font-semibold text-slate-900 mt-1.5">RSS収集・フィルタ</div>
+              <div class="text-xs text-slate-500 mt-0.5">前日08:00〜当日08:00の記事を取得・分類</div>
+            </div>
+          </div>
+          <div class="flex gap-3">
+            <div class="flex flex-col items-center">
+              <div class="w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center text-white text-xs font-bold flex-shrink-0">3</div>
+              <div class="w-0.5 h-6 bg-slate-200 mt-1"></div>
+            </div>
+            <div class="pb-4">
+              <div class="text-sm font-semibold text-slate-900 mt-1.5">HTML図解生成</div>
+              <div class="text-xs text-slate-500 mt-0.5">カテゴリ別カード型レイアウト · Tailwind CSS</div>
+            </div>
+          </div>
+          <div class="flex gap-3">
+            <div class="flex flex-col items-center">
+              <div class="w-8 h-8 rounded-full bg-slate-700 flex items-center justify-center text-white text-xs font-bold flex-shrink-0">4</div>
+              <div class="w-0.5 h-6 bg-slate-200 mt-1"></div>
+            </div>
+            <div class="pb-4">
+              <div class="text-sm font-semibold text-slate-900 mt-1.5">PNG変換</div>
+              <div class="text-xs text-slate-500 mt-0.5">Playwright · Chromium headless · Retina 2x</div>
+            </div>
+          </div>
+          <div class="flex gap-3">
+            <div class="flex flex-col items-center">
+              <div class="w-8 h-8 rounded-full bg-violet-500 flex items-center justify-center text-white text-xs font-bold flex-shrink-0">5</div>
+            </div>
+            <div>
+              <div class="text-sm font-semibold text-slate-900 mt-1.5">メール送信</div>
+              <div class="text-xs text-slate-500 mt-0.5">SendGrid · PNG 6枚添付 · 無料枠で運用</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== SECTION 5: 届くメール ===== -->
+    <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
+      <div class="bg-indigo-600 px-5 py-3 flex items-center gap-2">
+        <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+        <span class="text-white text-sm font-semibold">毎朝届くメールの中身</span>
+      </div>
+      <div class="p-5 space-y-3">
+        <!-- メールモック -->
+        <div class="border border-slate-200 rounded-xl overflow-hidden">
+          <div class="bg-slate-50 px-4 py-3 border-b border-slate-200">
+            <div class="flex items-center justify-between mb-1">
+              <div class="text-xs font-bold text-slate-800">【ニュースダイジェスト】2026/4/25</div>
+              <div class="text-xs text-slate-400">08:02</div>
+            </div>
+            <div class="flex items-center gap-1.5">
+              <div class="w-4 h-4 rounded-full bg-violet-500 flex items-center justify-center text-white" style="font-size:8px; font-weight:bold;">N</div>
+              <div class="text-xs text-slate-500">ニュースダイジェスト → あなたのメール</div>
+            </div>
+          </div>
+          <div class="p-3 space-y-2">
+            <div class="text-xs text-slate-600">本日の業界ニュースをまとめました。添付の図解画像をご確認ください。</div>
+            <div class="grid grid-cols-2 gap-1.5">
+              <div class="flex items-center gap-1.5 p-1.5 bg-slate-50 rounded-lg border border-slate-200">
+                <div class="w-1.5 h-1.5 rounded-full bg-slate-400"></div>
+                <div class="text-xs text-slate-600">digest-summary.png</div>
+              </div>
+              <div class="flex items-center gap-1.5 p-1.5 bg-red-50 rounded-lg border border-red-100">
+                <div class="w-1.5 h-1.5 rounded-full bg-red-500"></div>
+                <div class="text-xs text-red-700">digest-crude_oil.png</div>
+              </div>
+              <div class="flex items-center gap-1.5 p-1.5 bg-green-50 rounded-lg border border-green-100">
+                <div class="w-1.5 h-1.5 rounded-full bg-green-500"></div>
+                <div class="text-xs text-green-700">digest-plastics.png</div>
+              </div>
+              <div class="flex items-center gap-1.5 p-1.5 bg-blue-50 rounded-lg border border-blue-100">
+                <div class="w-1.5 h-1.5 rounded-full bg-blue-500"></div>
+                <div class="text-xs text-blue-700">digest-retail.png</div>
+              </div>
+              <div class="flex items-center gap-1.5 p-1.5 bg-purple-50 rounded-lg border border-purple-100">
+                <div class="w-1.5 h-1.5 rounded-full bg-purple-500"></div>
+                <div class="text-xs text-purple-700">digest-packaging.png</div>
+              </div>
+              <div class="flex items-center gap-1.5 p-1.5 bg-orange-50 rounded-lg border border-orange-100">
+                <div class="w-1.5 h-1.5 rounded-full bg-orange-500"></div>
+                <div class="text-xs text-orange-700">digest-ai.png</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== SECTION 6: 技術スタック ===== -->
+    <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
+      <div class="bg-slate-700 px-5 py-3 flex items-center gap-2">
+        <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
+        <span class="text-white text-sm font-semibold">技術スタック</span>
+      </div>
+      <div class="p-5">
+        <div class="grid grid-cols-2 gap-2.5">
+          <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
+            <div class="text-xs font-semibold text-slate-500 mb-1">実行環境</div>
+            <div class="text-sm font-bold text-slate-800">GitHub Actions</div>
+            <div class="text-xs text-slate-500">Ubuntu · Node.js 20</div>
+          </div>
+          <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
+            <div class="text-xs font-semibold text-slate-500 mb-1">RSS取得</div>
+            <div class="text-sm font-bold text-slate-800">rss-parser</div>
+            <div class="text-xs text-slate-500">11フィード · 15秒タイムアウト</div>
+          </div>
+          <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
+            <div class="text-xs font-semibold text-slate-500 mb-1">HTML→PNG</div>
+            <div class="text-sm font-bold text-slate-800">Playwright</div>
+            <div class="text-xs text-slate-500">Chromium headless · Retina 2x</div>
+          </div>
+          <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
+            <div class="text-xs font-semibold text-slate-500 mb-1">メール送信</div>
+            <div class="text-sm font-bold text-slate-800">SendGrid</div>
+            <div class="text-xs text-slate-500">無料枠 100通/日</div>
+          </div>
+          <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
+            <div class="text-xs font-semibold text-slate-500 mb-1">UI デザイン</div>
+            <div class="text-sm font-bold text-slate-800">Tailwind CSS</div>
+            <div class="text-xs text-slate-500">カード型 · shadcn/ui準拠</div>
+          </div>
+          <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
+            <div class="text-xs font-semibold text-slate-500 mb-1">設定管理</div>
+            <div class="text-sm font-bold text-slate-800">YAML + Secrets</div>
+            <div class="text-xs text-slate-500">sources.yml · GitHub Secrets</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== SECTION 7: コスト ===== -->
+    <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
+      <div class="bg-emerald-600 px-5 py-3 flex items-center gap-2">
+        <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"/></svg>
+        <span class="text-white text-sm font-semibold">運用コスト</span>
+      </div>
+      <div class="p-5 space-y-2">
+        <div class="flex items-center justify-between p-3 bg-emerald-50 rounded-xl border border-emerald-100">
+          <div class="text-sm text-slate-700">GitHub Actions</div>
+          <div class="font-bold text-emerald-600">¥0 / 月</div>
+        </div>
+        <div class="flex items-center justify-between p-3 bg-emerald-50 rounded-xl border border-emerald-100">
+          <div class="text-sm text-slate-700">SendGrid（100通/日まで）</div>
+          <div class="font-bold text-emerald-600">¥0 / 月</div>
+        </div>
+        <div class="flex items-center justify-between p-3 bg-emerald-50 rounded-xl border border-emerald-100">
+          <div class="text-sm text-slate-700">サーバー費用</div>
+          <div class="font-bold text-emerald-600">¥0 / 月</div>
+        </div>
+        <div class="flex items-center justify-between p-3 bg-slate-900 rounded-xl">
+          <div class="text-sm font-bold text-white">合計</div>
+          <div class="text-xl font-bold text-emerald-400">¥0 / 月</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== SECTION 8: 今後の拡張 ===== -->
+    <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
+      <div class="bg-amber-500 px-5 py-3 flex items-center gap-2">
+        <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+        <span class="text-white text-sm font-semibold">フェーズ2 拡張候補</span>
+      </div>
+      <div class="p-5 space-y-2">
+        <div class="flex items-start gap-2.5 p-3 bg-amber-50 rounded-xl border border-amber-100">
+          <div class="w-1.5 h-1.5 rounded-full bg-amber-500 mt-1.5 flex-shrink-0"></div>
+          <div>
+            <div class="text-sm font-semibold text-amber-800">Claude APIでスコアリング</div>
+            <div class="text-xs text-slate-500 mt-0.5">記事ごとに関連度をAI判定 → 精度向上（1日数円〜）</div>
+          </div>
+        </div>
+        <div class="flex items-start gap-2.5 p-3 bg-amber-50 rounded-xl border border-amber-100">
+          <div class="w-1.5 h-1.5 rounded-full bg-amber-500 mt-1.5 flex-shrink-0"></div>
+          <div>
+            <div class="text-sm font-semibold text-amber-800">「今日の注目1本」を先頭表示</div>
+            <div class="text-xs text-slate-500 mt-0.5">メールの冒頭に最重要記事を1行で表示</div>
+          </div>
+        </div>
+        <div class="flex items-start gap-2.5 p-3 bg-amber-50 rounded-xl border border-amber-100">
+          <div class="w-1.5 h-1.5 rounded-full bg-amber-500 mt-1.5 flex-shrink-0"></div>
+          <div>
+            <div class="text-sm font-semibold text-amber-800">WSJ・専門メディア追加</div>
+            <div class="text-xs text-slate-500 mt-0.5">ウォールストリートジャーナル等のソース追加</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- フッター -->
+    <div class="text-center pb-6 space-y-1">
+      <div class="text-xs text-slate-400">稼働開始: 2026年4月25日</div>
+      <div class="text-xs text-slate-400">GitHub Actions + SendGrid · 完全自動配信</div>
+    </div>
+
+  </div>
+</body>
+</html>
