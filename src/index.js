@@ -27,6 +27,7 @@ function run(command, label) {
 async function main() {
   const args = process.argv.slice(2);
   const skipSend = args.includes('--skip-send');
+  const skipSummarize = args.includes('--skip-summarize');
   const dateIdx = args.indexOf('--date');
   const dateValue = dateIdx !== -1 ? args[dateIdx + 1] : null;
   const dateArg = dateValue ? `--date ${dateValue}` : '';
@@ -34,6 +35,13 @@ async function main() {
   try {
     // 1. ニュース取得
     run(`node src/fetch-news.js ${dateArg}`.trim(), 'STEP 1: ニュース取得');
+
+    // 1.5. AI要約生成
+    if (skipSummarize) {
+      console.log('\n[STEP 1.5: AI要約] --skip-summarize が指定されたためスキップ');
+    } else {
+      run('node src/summarize.js', 'STEP 1.5: AI要約生成');
+    }
 
     // 2. HTML生成
     run('node src/generate-digest.js', 'STEP 2: HTML生成');

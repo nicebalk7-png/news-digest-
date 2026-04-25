@@ -54,6 +54,12 @@ jobs:
           fi
           node src/fetch-news.js $DATE_ARG
 
+      - name: AI要約生成
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          JINA_API_KEY: ${{ secrets.JINA_API_KEY }}
+        run: node src/summarize.js
+
       - name: HTML 図解生成
         run: node src/generate-digest.js
 
