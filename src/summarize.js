@@ -28,16 +28,26 @@ const FETCH_TIMEOUT_MS = 15000;
 
 function buildPrompt(content) {
   return `あなたは化学・資材業界の専門アナリストです。
-以下の記事本文を、業界関係者向けに100文字以内の日本語で要約してください。
-- 価格変動・規制・企業動向など重要な事実を優先する
-- 専門用語はそのまま使用する
-- 文末は体言止めまたは「〜の見通し」「〜を発表」など端的な表現にする
-- 100文字を絶対に超えないこと
+以下の記事本文を読み、JSON形式で回答してください。
+
+## 出力形式（必ずこのJSONのみを返す）
+{
+  "summary": "100文字以内の要約",
+  "diagram": {
+    "pattern": "A",
+    "nodes": ["原因・背景", "中間の変化", "業界への影響"]
+  }
+}
+
+## ルール
+- summary: 100文字以内、体言止めまたは「〜の見通し」「〜を発表」など端的に
+- diagram.pattern: 必ず "A" を使用
+- diagram.nodes: 必ず3要素、各15文字以内、記事の因果・影響の流れを表す
+- 記事から読み取れない内容は書かない
+- JSON以外の文字（説明文・マークダウン）は一切出力しない
 
 記事本文:
-${content}
-
-要約:`;
+${content}`;
 }
 
 async function fetchWithTimeout(url, options, timeoutMs) {
@@ -69,10 +79,30 @@ async function summarizeWithGemini(ai, content) {
   const response = await ai.models.generateContent({
     model: GEMINI_MODEL,
     contents: buildPrompt(content),
+    config: { responseMimeType: 'application/json' },
   });
-  const text = response.text?.trim() ?? '';
-  // 100文字を超えた場合は切り捨て（フォールバック）
-  return text.slice(0, 100);
+  const raw = response.text?.trim() ?? '';
+
+  try {
+    // マークダウンフェンスを除去してパース
+    const cleaned = raw.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/, '').trim();
+    const parsed = JSON.parse(cleaned);
+    return {
+      summary: String(parsed.summary || '').slice(0, 100),
+      diagram: parseDiagram(parsed.diagram),
+    };
+  } catch {
+    // JSONパース失敗時はテキストを要約として扱う
+    return { summary: raw.slice(0, 100), diagram: null };
+  }
+}
+
+function parseDiagram(raw) {
+  if (!raw || !Array.isArray(raw.nodes) || raw.nodes.length < 2) return null;
+  return {
+    pattern: 'A',
+    nodes: raw.nodes.slice(0, 3).map((n) => String(n).slice(0, 20)),
+  };
 }
 
 function sleep(ms) {
@@ -128,7 +158,7 @@ async function main() {
       }
 
       // 既に要約済みの場合はスキップ（再実行対応）
-      if (article.aiSummary !== undefined) {
+      if (article.aiSummary !== undefined && article.diagramData !== undefined) {
         console.log(`  [skip] 要約済み: ${article.title.slice(0, 40)}...`);
         skipped++;
         continue;
@@ -147,12 +177,14 @@ async function main() {
         if (!content || content.trim().length < 50) {
           throw new Error('本文が短すぎます');
         }
-        const summary = await summarizeWithGemini(ai, content);
-        article.aiSummary = summary;
-        console.log('OK');
+        const result = await summarizeWithGemini(ai, content);
+        article.aiSummary = result.summary;
+        article.diagramData = result.diagram;
+        console.log(`OK${result.diagram ? ' [図解あり]' : ''}`);
         processed++;
       } catch (err) {
         article.aiSummary = null;
+        article.diagramData = null;
         console.log(`FAIL (${err.message})`);
         failed++;
       }

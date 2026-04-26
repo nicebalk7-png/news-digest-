@@ -21,6 +21,44 @@ const path = require('path');
 const INPUT_PATH = path.join(__dirname, '../output/articles.json');
 const OUTPUT_DIR = path.join(__dirname, '../output');
 
+/**
+ * パターンA: 因果フロー図（原因 → 変化 → 影響）
+ */
+function renderDiagramA(nodes, colors) {
+  const [n0, n1, n2] = nodes;
+  return `<div class="mt-3 rounded-lg ${colors.bg} border ${colors.border} p-3">
+    <div class="text-[10px] font-semibold text-slate-400 uppercase tracking-wide mb-2">因果フロー</div>
+    <div class="flex items-stretch gap-1.5">
+      <div class="flex-1 rounded-md bg-white border ${colors.border} px-2 py-2 text-center">
+        <div class="text-[9px] font-medium text-slate-400 mb-0.5">背景・原因</div>
+        <div class="text-xs font-medium text-slate-800 leading-snug">${escapeHtml(n0 || '')}</div>
+      </div>
+      <div class="flex items-center text-slate-300">
+        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+      </div>
+      <div class="flex-1 rounded-md bg-white border ${colors.border} px-2 py-2 text-center">
+        <div class="text-[9px] font-medium text-slate-400 mb-0.5">変化</div>
+        <div class="text-xs font-medium text-slate-800 leading-snug">${escapeHtml(n1 || '')}</div>
+      </div>
+      <div class="flex items-center text-slate-300">
+        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+      </div>
+      <div class="flex-1 rounded-md bg-white border ${colors.border} px-2 py-2 text-center">
+        <div class="text-[9px] font-medium ${colors.text} mb-0.5">業界への影響</div>
+        <div class="text-xs font-medium text-slate-800 leading-snug">${escapeHtml(n2 || '')}</div>
+      </div>
+    </div>
+  </div>`;
+}
+
+/**
+ * 図解データからHTMLを生成（パターン振り分け）
+ */
+function renderDiagram(diagramData, colors) {
+  if (!diagramData || !Array.isArray(diagramData.nodes) || diagramData.nodes.length < 2) return '';
+  return renderDiagramA(diagramData.nodes, colors);
+}
+
 // カテゴリアイコン（インラインSVG）
 const CATEGORY_ICONS = {
   crude_oil: `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><path stroke-linecap="round" stroke-linejoin="round" d="M9 22V12h6v10"/></svg>`,
@@ -278,6 +316,7 @@ function generateWebHTML(data) {
       const displaySummary = article.aiSummary || article.summary;
       const isAiSummary = !!article.aiSummary;
       const pub = formatDate(article.pubDate);
+      const diagramHtml = renderDiagram(article.diagramData, colors);
 
       return `<li class="p-4 rounded-xl border border-slate-200 bg-white hover:border-slate-300 transition-colors">
           <a href="${escapeHtml(article.link)}" target="_blank" rel="noopener" class="block">
@@ -287,6 +326,7 @@ function generateWebHTML(data) {
               <p class="text-sm text-slate-600 leading-relaxed">${escapeHtml(displaySummary)}</p>
               ${isAiSummary ? `<span class="inline-block mt-1 px-1.5 py-0.5 text-[10px] font-semibold rounded ${colors.text} ${colors.bg} border ${colors.border}">AI要約</span>` : ''}
             </div>` : ''}
+            ${diagramHtml}
           </a>
         </li>`;
     }).join('\n        ');
