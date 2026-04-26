@@ -137,12 +137,26 @@ async function main() {
   for (const [catKey, category] of Object.entries(categories)) {
     const matched = inWindow.filter((a) => matchesCategory(a, category));
 
-    // 重複URLを排除
-    const seen = new Set();
+    // 重複排除（URL重複 + タイトル類似）
+    const seenUrls = new Set();
+    const seenTitleKeys = new Set();
     const deduped = matched.filter((a) => {
       const url = a.link || a.guid;
-      if (!url || seen.has(url)) return false;
-      seen.add(url);
+      if (url && seenUrls.has(url)) return false;
+      if (url) seenUrls.add(url);
+
+      // タイトルを正規化して類似記事を排除
+      // 「写真ギャラリーN枚め |」「(1/7)」などのプレフィックス・サフィックスを除去
+      const rawTitle = (a.title || '').trim();
+      const normalizedTitle = rawTitle
+        .replace(/^写真ギャラリー\d+枚め\s*[|｜]\s*/u, '')
+        .replace(/\s*[\(（]\d+\/\d+[\)）]\s*$/, '')
+        .replace(/\s*[-–—]\s*\S+$/, '') // 末尾の「- メディア名」を除去
+        .trim()
+        .slice(0, 40); // 先頭40文字で比較
+
+      if (seenTitleKeys.has(normalizedTitle)) return false;
+      seenTitleKeys.add(normalizedTitle);
       return true;
     });
 
