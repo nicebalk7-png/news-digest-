@@ -236,6 +236,126 @@ function escapeHtml(str) {
     .replace(/'/g, '&#039;');
 }
 
+/**
+ * 縦長Webページ（index.html）生成 — URL共有用メインページ
+ */
+function generateWebHTML(data) {
+  const { categories, generatedAt, windowStart, windowEnd } = data;
+
+  const d = new Date(generatedAt);
+  const jst = new Date(d.getTime() + 9 * 60 * 60 * 1000);
+  const dateStr = `${jst.getUTCFullYear()}/${jst.getUTCMonth() + 1}/${jst.getUTCDate()}`;
+  const timeStr = `${String(jst.getUTCHours()).padStart(2, '0')}:${String(jst.getUTCMinutes()).padStart(2, '0')}`;
+
+  const totalArticles = Object.values(categories).reduce((sum, c) => sum + c.articles.length, 0);
+
+  // カテゴリナビ
+  const navItems = Object.entries(categories)
+    .filter(([, c]) => c.articles.length > 0)
+    .map(([key, c]) => {
+      const colors = CATEGORY_COLORS[key] || CATEGORY_COLORS.crude_oil;
+      return `<a href="#cat-${key}" class="flex items-center gap-1.5 px-3 py-1.5 rounded-full border ${colors.border} ${colors.bg} ${colors.text} text-xs font-medium whitespace-nowrap hover:opacity-80 transition-opacity">${c.label} <span class="opacity-60">${c.articles.length}</span></a>`;
+    }).join('\n        ');
+
+  // カテゴリセクション
+  const sections = Object.entries(categories).map(([key, category]) => {
+    const colors = CATEGORY_COLORS[key] || CATEGORY_COLORS.crude_oil;
+    const icon = CATEGORY_ICONS[key] || CATEGORY_ICONS.crude_oil;
+
+    if (category.articles.length === 0) return '';
+
+    const trendBlock = category.trendSummary
+      ? `<div class="mb-5 p-4 rounded-xl bg-slate-50 border border-slate-200">
+          <div class="flex items-center gap-2 mb-2">
+            <div class="w-5 h-5 rounded-md ${colors.icon} flex items-center justify-center text-white flex-shrink-0">${icon}</div>
+            <span class="text-xs font-semibold text-slate-500 uppercase tracking-wide">今日のまとめ</span>
+          </div>
+          <p class="text-sm text-slate-700 leading-relaxed">${escapeHtml(category.trendSummary)}</p>
+        </div>`
+      : '';
+
+    const articleItems = category.articles.map((article) => {
+      const displaySummary = article.aiSummary || article.summary;
+      const isAiSummary = !!article.aiSummary;
+      const pub = formatDate(article.pubDate);
+
+      return `<li class="p-4 rounded-xl border border-slate-200 bg-white hover:border-slate-300 transition-colors">
+          <a href="${escapeHtml(article.link)}" target="_blank" rel="noopener" class="block">
+            <p class="text-sm font-medium text-slate-900 leading-snug hover:underline">${escapeHtml(article.title)}</p>
+            <p class="text-xs text-slate-400 mt-1">${escapeHtml(article.source)}${pub ? ' · ' + pub : ''}</p>
+            ${displaySummary ? `<div class="mt-3 pl-3 border-l-2 ${colors.border}">
+              <p class="text-sm text-slate-600 leading-relaxed">${escapeHtml(displaySummary)}</p>
+              ${isAiSummary ? `<span class="inline-block mt-1 px-1.5 py-0.5 text-[10px] font-semibold rounded ${colors.text} ${colors.bg} border ${colors.border}">AI要約</span>` : ''}
+            </div>` : ''}
+          </a>
+        </li>`;
+    }).join('\n        ');
+
+    return `<section id="cat-${key}" class="scroll-mt-6">
+      <div class="flex items-center gap-3 pb-3 mb-4 border-b border-slate-200">
+        <div class="w-7 h-7 rounded-lg ${colors.icon} flex items-center justify-center text-white flex-shrink-0">${icon}</div>
+        <div class="flex-1">
+          <h2 class="text-base font-bold text-slate-900">${escapeHtml(category.label)}</h2>
+        </div>
+        <span class="text-sm font-medium text-slate-500">${category.articles.length}件</span>
+      </div>
+      ${trendBlock}
+      <ul class="space-y-3">
+        ${articleItems}
+      </ul>
+    </section>`;
+  }).filter(Boolean).join('\n\n    ');
+
+  return `<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ニュースダイジェスト ${dateStr}</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Hiragino Sans', 'Yu Gothic', sans-serif; }
+    html { scroll-behavior: smooth; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-900">
+  <div class="max-w-2xl mx-auto px-4 py-8">
+
+    <!-- ヘッダー -->
+    <header class="mb-8">
+      <div class="flex items-start justify-between gap-4">
+        <div>
+          <h1 class="text-xl font-bold text-slate-900">ニュースダイジェスト</h1>
+          <p class="text-sm text-slate-500 mt-1">${formatWindowDate(windowStart, windowEnd)}</p>
+        </div>
+        <div class="text-center shrink-0">
+          <div class="text-2xl font-bold text-slate-900">${totalArticles}</div>
+          <div class="text-xs text-slate-500">件</div>
+        </div>
+      </div>
+
+      <!-- カテゴリナビ -->
+      <div class="flex flex-wrap gap-2 mt-4">
+        ${navItems}
+      </div>
+    </header>
+
+    <!-- カテゴリセクション -->
+    <main class="space-y-10">
+    ${sections}
+    </main>
+
+    <!-- フッター -->
+    <footer class="mt-12 pt-6 border-t border-slate-200 flex items-center justify-between">
+      <span class="text-xs text-slate-400">${dateStr} ${timeStr} JST</span>
+      <span class="text-xs text-slate-400">Generated by Claude Code</span>
+    </footer>
+
+  </div>
+</body>
+</html>`;
+}
+
 function main() {
   if (!fs.existsSync(INPUT_PATH)) {
     console.error(`articles.json が見つかりません: ${INPUT_PATH}`);
@@ -249,12 +369,17 @@ function main() {
     fs.mkdirSync(OUTPUT_DIR, { recursive: true });
   }
 
-  // サマリーページ
+  // 縦長Webページ（URL共有用メインページ）
+  const webPath = path.join(OUTPUT_DIR, 'index.html');
+  fs.writeFileSync(webPath, generateWebHTML(data), 'utf8');
+  console.log(`生成: ${webPath}`);
+
+  // サマリーページ（メール添付用PNG向け、既存）
   const summaryPath = path.join(OUTPUT_DIR, 'digest-summary.html');
   fs.writeFileSync(summaryPath, generateSummaryHTML(data), 'utf8');
   console.log(`生成: ${summaryPath}`);
 
-  // カテゴリ別ページ
+  // カテゴリ別ページ（既存）
   for (const catKey of Object.keys(data.categories)) {
     const catPath = path.join(OUTPUT_DIR, `digest-${catKey}.html`);
     fs.writeFileSync(catPath, generateCategoryHTML(data, catKey), 'utf8');

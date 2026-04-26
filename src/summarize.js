@@ -162,6 +162,60 @@ async function main() {
     }
   }
 
+  // カテゴリごとのトレンドサマリー生成
+  console.log(`\n=== カテゴリトレンド分析 ===`);
+  for (const [catKey, category] of Object.entries(data.categories)) {
+    const articles = category.articles || [];
+    if (articles.length === 0) {
+      category.trendSummary = null;
+      continue;
+    }
+
+    // 記事数・内容が変わっていなければスキップ
+    const fingerprint = articles.map((a) => `${a.link}|${a.aiSummary || ''}`).join('\n');
+    if (category.trendSummary && category._trendFingerprint === fingerprint) {
+      console.log(`  [skip] ${category.label}: トレンド済み`);
+      continue;
+    }
+
+    process.stdout.write(`  [trend] ${category.label}... `);
+    try {
+      const lines = articles.map((a, i) => {
+        const body = a.aiSummary || a.summary || '(要約なし)';
+        return `${i + 1}. ${a.title}\n   要約: ${body}`;
+      }).join('\n\n');
+
+      const prompt = `あなたは化学・資材業界の専門アナリストです。
+カテゴリ「${category.label}」の本日掲載記事を踏まえ、今日の業界トレンドを2文以内・150文字以内の日本語で述べてください。
+- 記事に現れていない主張はしない
+- 価格・供給・規制・企業動向など共通テーマにフォーカス
+- 前置き不要、結論文から始める
+
+本日の記事:
+${lines}
+
+トレンド（2文以内）:`;
+
+      const response = await ai.models.generateContent({
+        model: GEMINI_MODEL,
+        contents: prompt,
+      });
+      const trend = (response.text?.trim() ?? '').slice(0, 150);
+      category.trendSummary = trend;
+      category._trendFingerprint = fingerprint;
+      console.log('OK');
+    } catch (err) {
+      category.trendSummary = null;
+      console.log(`FAIL (${err.message})`);
+    }
+    await sleep(INTERVAL_MS);
+  }
+
+  // _trendFingerprint は保存前に除去
+  for (const category of Object.values(data.categories)) {
+    delete category._trendFingerprint;
+  }
+
   // articles.json を上書き保存
   fs.writeFileSync(INPUT_PATH, JSON.stringify(data, null, 2), 'utf8');
 

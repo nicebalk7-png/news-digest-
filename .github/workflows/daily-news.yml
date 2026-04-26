@@ -63,16 +63,14 @@ jobs:
       - name: HTML 図解生成
         run: node src/generate-digest.js
 
-      - name: PNG スクリーンショット生成
-        run: |
-          if [ -f output/capture-list.txt ]; then
-            node scripts/capture.js --batch output/capture-list.txt
-          else
-            echo "[WARN] capture-list.txt が見つかりません。PNG生成をスキップします。"
-          fi
-
       - name: 生成ファイル一覧
         run: ls -lh output/
+
+      - name: Surge にデプロイ
+        env:
+          SURGE_LOGIN: ${{ secrets.SURGE_LOGIN }}
+          SURGE_TOKEN: ${{ secrets.SURGE_TOKEN }}
+        run: npx surge output/ morning-digest-plan.surge.sh --token "$SURGE_TOKEN"
 
       - name: メール送信
         if: ${{ github.event.inputs.skip_send != 'true' }}
@@ -82,6 +80,7 @@ jobs:
           GMAIL_APP_PASS: ${{ secrets.GMAIL_APP_PASS }}
           MAIL_TO: ${{ secrets.MAIL_TO }}
           MAIL_FROM: ${{ secrets.MAIL_FROM }}
+          DIGEST_URL: "https://morning-digest-plan.surge.sh"
         run: node src/send-email.js
 
       - name: 成果物を保存（デバッグ用）
