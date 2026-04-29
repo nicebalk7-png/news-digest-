@@ -2,8 +2,8 @@ name: ニュースダイジェスト 毎朝配信
 
 on:
   schedule:
-    # JST 08:00 = UTC 23:00（前日）
-    - cron: "0 23 * * *"
+    # 目標 JST 08:00、遅延を見越して UTC 15:00（JST 00:00）に設定
+    - cron: "0 15 * * *"
   workflow_dispatch:
     inputs:
       target_date:
