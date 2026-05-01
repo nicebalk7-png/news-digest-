@@ -331,6 +331,15 @@ function generateWebHTML(data) {
         </li>`;
     }).join('\n        ');
 
+    const hasExplainer = category.articles.some((a) => a.aiSummary);
+    const explainerLink = hasExplainer
+      ? `<a href="./explainer-${key}.html"
+           class="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full border ${colors.border} ${colors.bg} ${colors.text} hover:opacity-80 transition-opacity">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+          図解で見る
+        </a>`
+      : '';
+
     return `<section id="cat-${key}" class="scroll-mt-6">
       <div class="flex items-center gap-3 pb-3 mb-4 border-b border-slate-200">
         <div class="w-7 h-7 rounded-lg ${colors.icon} flex items-center justify-center text-white flex-shrink-0">${icon}</div>
@@ -338,6 +347,7 @@ function generateWebHTML(data) {
           <h2 class="text-base font-bold text-slate-900">${escapeHtml(category.label)}</h2>
         </div>
         <span class="text-sm font-medium text-slate-500">${category.articles.length}件</span>
+        ${explainerLink}
       </div>
       ${trendBlock}
       <ul class="space-y-3">

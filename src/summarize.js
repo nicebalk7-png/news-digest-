@@ -33,6 +33,9 @@ function buildPrompt(content) {
 ## 出力形式（必ずこのJSONのみを返す）
 {
   "summary": "100文字以内の要約",
+  "relevanceScore": 3,
+  "visualType": "causal",
+  "keyPoints": ["ポイント1（30文字以内）", "ポイント2（30文字以内）", "ポイント3（30文字以内）"],
   "diagram": {
     "pattern": "A",
     "nodes": ["原因・背景", "中間の変化", "業界への影響"]
@@ -41,6 +44,13 @@ function buildPrompt(content) {
 
 ## ルール
 - summary: 100文字以内、体言止めまたは「〜の見通し」「〜を発表」など端的に
+- relevanceScore: 1〜5の整数。化学・資材業界への影響の大きさ（5が最大）
+- visualType: 記事の性質に応じて以下から1つ選ぶ
+  - "causal"    : 原因→変化→影響の因果関係が明確な記事
+  - "process"   : 手順・ステップ・工程の流れがある記事
+  - "comparison": 2つの対象を比較・対比する記事
+  - "stat"      : 価格・数値・統計が主役の記事
+- keyPoints: 記事の核心を3点に絞る。各30文字以内、体言止めで
 - diagram.pattern: 必ず "A" を使用
 - diagram.nodes: 必ず3要素、各15文字以内、記事の因果・影響の流れを表す
 - 記事から読み取れない内容は書かない
@@ -89,11 +99,24 @@ async function summarizeWithGemini(ai, content) {
     const parsed = JSON.parse(cleaned);
     return {
       summary: String(parsed.summary || '').slice(0, 100),
+      relevanceScore: Math.min(5, Math.max(1, parseInt(parsed.relevanceScore, 10) || 3)),
+      visualType: ['causal', 'process', 'comparison', 'stat'].includes(parsed.visualType)
+        ? parsed.visualType
+        : 'causal',
+      keyPoints: Array.isArray(parsed.keyPoints)
+        ? parsed.keyPoints.slice(0, 3).map((p) => String(p).slice(0, 30))
+        : [],
       diagram: parseDiagram(parsed.diagram),
     };
   } catch {
     // JSONパース失敗時はテキストを要約として扱う
-    return { summary: raw.slice(0, 100), diagram: null };
+    return {
+      summary: raw.slice(0, 100),
+      relevanceScore: 3,
+      visualType: 'causal',
+      keyPoints: [],
+      diagram: null,
+    };
   }
 }
 
@@ -166,6 +189,9 @@ async function main() {
 
       if (!article.link) {
         article.aiSummary = null;
+        article.relevanceScore = 1;
+        article.visualType = 'causal';
+        article.keyPoints = [];
         skipped++;
         continue;
       }
@@ -179,11 +205,17 @@ async function main() {
         }
         const result = await summarizeWithGemini(ai, content);
         article.aiSummary = result.summary;
+        article.relevanceScore = result.relevanceScore;
+        article.visualType = result.visualType;
+        article.keyPoints = result.keyPoints;
         article.diagramData = result.diagram;
-        console.log(`OK${result.diagram ? ' [図解あり]' : ''}`);
+        console.log(`OK [score:${result.relevanceScore}] [${result.visualType}]${result.diagram ? ' [図解あり]' : ''}`);
         processed++;
       } catch (err) {
         article.aiSummary = null;
+        article.relevanceScore = 1;
+        article.visualType = 'causal';
+        article.keyPoints = [];
         article.diagramData = null;
         console.log(`FAIL (${err.message})`);
         failed++;

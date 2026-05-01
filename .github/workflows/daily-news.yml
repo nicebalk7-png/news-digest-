@@ -63,6 +63,9 @@ jobs:
       - name: HTML 図解生成
         run: node src/generate-digest.js
 
+      - name: カテゴリ別図解ページ生成
+        run: node src/generate-explainer.js
+
       - name: 生成ファイル一覧
         run: ls -lh output/
 
