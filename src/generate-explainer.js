@@ -82,7 +82,7 @@ function renderCausal(diagramData, theme) {
         <div class="flex items-center text-slate-300">
           <i data-lucide="chevron-right" class="w-4 h-4"></i>
         </div>
-        <div class="flex-1 rounded-lg border" style="border-color:${theme.accent}33; background:${theme.accentLight};" class="px-3 py-2.5 text-center">
+        <div class="flex-1 rounded-lg border px-3 py-2.5 text-center" style="border-color:${theme.accent}33; background:${theme.accentLight};">
           <p class="text-[10px] mb-1" style="color:${theme.accentText}; opacity:0.7;">業界への影響</p>
           <p class="text-xs font-semibold leading-snug" style="color:${theme.accentText};">${escapeHtml(n2 || '')}</p>
         </div>
@@ -92,7 +92,7 @@ function renderCausal(diagramData, theme) {
 
 /** process: 番号付き縦ステップフロー */
 function renderProcess(diagramData, keyPoints, theme) {
-  const steps = (diagramData?.nodes?.length >= 2 ? diagramData.nodes : keyPoints) || [];
+  const steps = (diagramData?.nodes?.length >= 1 ? diagramData.nodes : keyPoints) || [];
   if (steps.length === 0) return '';
   const items = steps.map((step, i) => `
         <div class="flex items-start gap-3">
@@ -137,11 +137,12 @@ function renderComparison(diagramData, theme) {
 }
 
 /** stat: 数値カード */
-function renderStat(keyPoints, theme) {
-  if (!keyPoints || keyPoints.length === 0) return '';
-  const cards = keyPoints.map((kp) => {
-    // 数字が含まれていれば強調表示
-    const numMatch = kp.match(/[\d,\.]+[%倍億万円ドル%]/);
+function renderStat(keyPoints, diagramData, theme) {
+  const points = (keyPoints && keyPoints.length > 0) ? keyPoints : (diagramData?.nodes || []);
+  if (points.length === 0) return '';
+  const gridCols = points.length <= 2 ? 'grid-cols-2' : 'grid-cols-3';
+  const cards = points.map((kp) => {
+    const numMatch = kp.match(/[\d,\.]+\s*(?:兆|億|万|千)?(?:円|ドル|USD|%|倍|件|社|pt)/);
     const num = numMatch ? numMatch[0] : null;
     const label = num ? kp.replace(num, '').trim() : kp;
     return `
@@ -155,7 +156,7 @@ function renderStat(keyPoints, theme) {
       <p class="text-xs font-semibold text-ads-dim uppercase tracking-wide mb-3 flex items-center gap-1.5">
         <i data-lucide="bar-chart-2" class="w-3.5 h-3.5"></i> 数値ハイライト
       </p>
-      <div class="grid grid-cols-3 gap-2">
+      <div class="grid ${gridCols} gap-2">
         ${cards}
       </div>
     </div>`;
@@ -169,7 +170,7 @@ function renderDiagram(article, theme) {
     case 'comparison':
       return renderComparison(article.diagramData, theme);
     case 'stat':
-      return renderStat(article.keyPoints, theme);
+      return renderStat(article.keyPoints, article.diagramData, theme);
     default:
       return renderCausal(article.diagramData, theme);
   }

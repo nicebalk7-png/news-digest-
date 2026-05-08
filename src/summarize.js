@@ -122,9 +122,11 @@ async function summarizeWithGemini(ai, content) {
 
 function parseDiagram(raw) {
   if (!raw || !Array.isArray(raw.nodes) || raw.nodes.length < 2) return null;
+  const trimmed = raw.nodes.slice(0, 3).map((n) => String(n).slice(0, 20));
+  while (trimmed.length < 3) trimmed.push('');
   return {
     pattern: 'A',
-    nodes: raw.nodes.slice(0, 3).map((n) => String(n).slice(0, 20)),
+    nodes: trimmed,
   };
 }
 
