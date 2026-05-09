@@ -11,7 +11,7 @@ sources:
     lang: ja
 
   - name: "Google News - プラスチック"
-    url: "https://news.google.com/rss/search?q=%E3%83%97%E3%83%A9%E3%82%B9%E3%83%81%E3%83%83%E3%82%AF+%E6%96%B0%E5%95%86%E5%93%81&hl=ja&gl=JP&ceid=JP:ja"
+    url: "https://news.google.com/rss/search?q=%E6%A8%B9%E8%84%82+%E5%8C%96%E5%AD%A6%E3%83%A1%E3%83%BC%E3%82%AB%E3%83%BC+OR+%E7%9F%B3%E5%8C%96&hl=ja&gl=JP&ceid=JP:ja"
     lang: ja
 
   - name: "Google News - 小売業"
@@ -19,7 +19,7 @@ sources:
     lang: ja
 
   - name: "Google News - 包装資材"
-    url: "https://news.google.com/rss/search?q=%E5%8C%85%E8%A3%85%E8%B3%87%E6%9D%90+%E5%8C%85%E6%9D%90&hl=ja&gl=JP&ceid=JP:ja"
+    url: "https://news.google.com/rss/search?q=%E5%8C%85%E8%A3%85%E6%9D%90%E6%96%99+%E3%83%95%E3%82%A3%E3%83%AB%E3%83%A0+%E3%83%A1%E3%83%BC%E3%82%AB%E3%83%BC&hl=ja&gl=JP&ceid=JP:ja"
     lang: ja
 
   # Yahoo Japan ニュース（トピック別）
@@ -27,29 +27,30 @@ sources:
     url: "https://news.yahoo.co.jp/rss/topics/business.xml"
     lang: ja
 
-  # ロイター 日本語
-  - name: "ロイター - ビジネス"
-    url: "https://feeds.reuters.com/reuters/JPBusinessNews"
-    lang: ja
-
-  # ロイター 英語（原油・エネルギー）
-  - name: "Reuters - Energy"
-    url: "https://feeds.reuters.com/reuters/UKenergyNews"
+  # AP News（Reuters代替・国際ビジネス）
+  - name: "AP News - Business"
+    url: "https://feeds.apnews.com/rss/business"
     lang: en
 
-  # 日経（見出しのみ）
-  - name: "日本経済新聞"
-    url: "https://www.nikkei.com/rss/news.rdf"
+  # EIA（米国エネルギー省・原油・エネルギー専門）
+  - name: "EIA - Today in Energy"
+    url: "https://www.eia.gov/rss/todayinenergy.xml"
+    lang: en
+
+  # 東洋経済オンライン（日経代替・業界分析強い）
+  - name: "東洋経済オンライン"
+    url: "https://toyokeizai.net/list/feed/rss"
     lang: ja
 
-  # ブルームバーグ 日本版
-  - name: "Bloomberg Japan - ビジネス"
-    url: "https://feeds.bloomberg.co.jp/bloomberg/businessnews.rss"
+  # NHK 経済ニュース（Bloomberg代替・速報性高・安定）
+  - name: "NHK - 経済"
+    url: "https://www.nhk.or.jp/rss/news/cat5.xml"
     lang: ja
 
-  - name: "Bloomberg Japan - テクノロジー"
-    url: "https://feeds.bloomberg.co.jp/bloomberg/technologynews.rss"
-    lang: ja
+  # Plastics News（Bloomberg Tech代替・プラスチック業界専門英語誌）
+  - name: "Plastics News"
+    url: "https://www.plasticsnews.com/rss.xml"
+    lang: en
 
   # Google News - AI関連
   - name: "Google News - AI・人工知能"
