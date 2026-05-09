@@ -44,6 +44,23 @@ function escapeHtml(str) {
     .replace(/'/g, '&#039;');
 }
 
+function getSourceBadge(sourceName) {
+  const s = sourceName || '';
+  let label, cls;
+  if (s.includes('Google News')) {
+    label = '集約'; cls = 'bg-gray-100 text-gray-500';
+  } else if (s.includes('EIA') || s.includes('AP News') || s.includes('Reuters') || s.includes('Bloomberg')) {
+    label = '海外電'; cls = 'bg-green-100 text-green-700';
+  } else if (s.includes('NHK') || s.includes('Yahoo')) {
+    label = '公共'; cls = 'bg-slate-100 text-slate-600';
+  } else if (s.includes('東洋経済') || s.includes('Plastics') || s.includes('日刊工業') || s.includes('化学工業')) {
+    label = '専門誌'; cls = 'bg-blue-100 text-blue-700';
+  } else {
+    label = '一般'; cls = 'bg-gray-100 text-gray-500';
+  }
+  return `<span class="inline-block text-[10px] px-1.5 py-0.5 rounded font-medium ${cls}">${label}</span>`;
+}
+
 function formatDate(isoString) {
   if (!isoString) return '';
   const d = new Date(isoString);
@@ -263,7 +280,7 @@ function generateCategoryExplainer(catKey, category, theme, generatedAt) {
          class="text-base font-bold leading-snug hover:underline block" style="color:${theme.accentText};">
         ${escapeHtml(article.title)}
       </a>
-      <p class="text-xs text-ads-muted mt-1">${escapeHtml(article.source)}</p>
+      <p class="text-xs text-ads-muted mt-1 flex items-center gap-1.5">${getSourceBadge(article.source)} ${escapeHtml(article.source)}</p>
     </div>
     <div class="px-5 py-4">
       ${article.aiSummary ? `

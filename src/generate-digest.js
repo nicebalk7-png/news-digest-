@@ -157,7 +157,7 @@ function generateSummaryHTML(data) {
       <div>
         <div class="text-xs font-medium ${colors.text} mb-0.5">${label}</div>
         <div class="text-sm text-slate-800 leading-snug">${escapeHtml(article.title)}</div>
-        <div class="text-xs text-slate-400 mt-1">${article.source} · ${formatDate(article.pubDate)}</div>
+        <div class="text-xs text-slate-400 mt-1 flex items-center gap-1.5">${getSourceBadge(article.source)} ${article.source} · ${formatDate(article.pubDate)}</div>
       </div>
     </a>`;
   }).join('\n');
@@ -224,7 +224,7 @@ function generateCategoryHTML(data, catKey) {
         <div class="text-sm text-slate-800 leading-snug font-medium">${escapeHtml(article.title)}</div>
         ${displaySummary ? `<div class="text-xs text-slate-500 mt-1 leading-relaxed">${escapeHtml(displaySummary)}${isAiSummary ? ' <span class="inline-block align-middle px-1 py-0 text-[9px] font-semibold text-slate-400 border border-slate-200 rounded leading-tight">AI</span>' : ''}</div>` : ''}
         <div class="flex items-center gap-2 mt-1.5">
-          <span class="text-xs text-slate-400">${escapeHtml(article.source)}</span>
+          <span class="flex items-center gap-1.5 text-xs text-slate-400">${getSourceBadge(article.source)} ${escapeHtml(article.source)}</span>
           <span class="text-xs text-slate-300">·</span>
           <span class="text-xs text-slate-400">${formatDate(article.pubDate)}</span>
         </div>
@@ -274,6 +274,23 @@ function escapeHtml(str) {
     .replace(/'/g, '&#039;');
 }
 
+function getSourceBadge(sourceName) {
+  const s = sourceName || '';
+  let label, cls;
+  if (s.includes('Google News')) {
+    label = '集約'; cls = 'bg-gray-100 text-gray-500';
+  } else if (s.includes('EIA') || s.includes('AP News') || s.includes('Reuters') || s.includes('Bloomberg')) {
+    label = '海外電'; cls = 'bg-green-100 text-green-700';
+  } else if (s.includes('NHK') || s.includes('Yahoo')) {
+    label = '公共'; cls = 'bg-slate-100 text-slate-600';
+  } else if (s.includes('東洋経済') || s.includes('Plastics') || s.includes('日刊工業') || s.includes('化学工業')) {
+    label = '専門誌'; cls = 'bg-blue-100 text-blue-700';
+  } else {
+    label = '一般'; cls = 'bg-gray-100 text-gray-500';
+  }
+  return `<span class="inline-block text-[10px] px-1.5 py-0.5 rounded font-medium ${cls}">${label}</span>`;
+}
+
 /**
  * 縦長Webページ（index.html）生成 — URL共有用メインページ
  */
@@ -321,7 +338,7 @@ function generateWebHTML(data) {
       return `<li class="p-4 rounded-xl border border-slate-200 bg-white hover:border-slate-300 transition-colors">
           <a href="${escapeHtml(article.link)}" target="_blank" rel="noopener" class="block">
             <p class="text-sm font-medium text-slate-900 leading-snug hover:underline">${escapeHtml(article.title)}</p>
-            <p class="text-xs text-slate-400 mt-1">${escapeHtml(article.source)}${pub ? ' · ' + pub : ''}</p>
+            <p class="text-xs text-slate-400 mt-1 flex items-center gap-1.5">${getSourceBadge(article.source)} ${escapeHtml(article.source)}${pub ? ' · ' + pub : ''}</p>
             ${displaySummary ? `<div class="mt-3 pl-3 border-l-2 ${colors.border}">
               <p class="text-sm text-slate-600 leading-relaxed">${escapeHtml(displaySummary)}</p>
               ${isAiSummary ? `<span class="inline-block mt-1 px-1.5 py-0.5 text-[10px] font-semibold rounded ${colors.text} ${colors.bg} border ${colors.border}">AI要約</span>` : ''}
